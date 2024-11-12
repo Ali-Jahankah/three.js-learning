@@ -97,17 +97,15 @@ const App = () => {
     // scene.add(mesh);
 
     // scene.add(camera);
-
+    let winAnimate;
     const animate = () => {
       points.rotation.x += 0.005;
       points.rotation.y += 0.001;
-      // boxMesh.rotation.x -= 0.01;
-      // boxMesh.rotation.y -= 0.01;
-      orbitControls.update();
+
       rerenderer.render(scene, camera);
-      window.requestAnimationFrame(animate);
+
+      winAnimate = window.requestAnimationFrame(animate);
     };
-    console.log('first');
     animate();
     const handleResize = () => {
       const aspect = {
@@ -121,12 +119,14 @@ const App = () => {
     window.addEventListener('resize', handleResize);
 
     return () => {
+      window.cancelAnimationFrame(winAnimate);
+
       window.removeEventListener('resize', handleResize);
 
       rerenderer.dispose();
       orbitControls.dispose();
     };
-  }, [canvasRef.current]);
+  }, [data]);
 
   return data[0] ? (
     <article className="container">
