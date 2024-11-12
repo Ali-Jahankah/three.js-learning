@@ -3,3 +3,42 @@
   margin: 0;
   box-sizing: border-box;
 }
+
+.container {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(
+    0deg,
+    white,
+    rgb(198, 223, 243),
+    rgb(7, 78, 110) 60%,
+    rgb(17, 50, 88)
+  );
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.title {
+  z-index: 1;
+  position: relative;
+  color: white;
+  font-size: 3rem;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 20px;
+}
+img {
+  border-radius: 50%;
+  margin: 1em;
+  width: 200px;
+  height: 200px;
+}
