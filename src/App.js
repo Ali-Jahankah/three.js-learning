@@ -151,7 +151,7 @@ const App = () => {
     <div className="model">
       <Canvas camera={{ position: [8, 3, 0], near: 0.01, far: 1000 }}>
         <Suspense fallback={<Loader></Loader>}>
-          <ambientLight intensity={1} color="#ffffff" /> {/* White light */}
+          <ambientLight intensity={1} color="#ffffff" />
           <directionalLight
             intensity={1}
             position={[0, 30, 20]}
@@ -169,11 +169,11 @@ const App = () => {
           />
           <Model />
           <OrbitControls
-            target={[0, 2, 0]} // Focus the center of the room
-            enablePan={false} // Disable panning
-            minDistance={1} // Minimum zoom to prevent getting too close
-            maxDistance={1} // Maximum zoom to prevent exiting the room
-            maxPolarAngle={Math.PI / 2} // Restrict vertical rotation to floor level
+            target={[0, 2, 0]}
+            enablePan={false}
+            minDistance={1}
+            maxDistance={1}
+            maxPolarAngle={Math.PI / 2}
             minPolarAngle={Math.PI / 4}
           />
         </Suspense>
