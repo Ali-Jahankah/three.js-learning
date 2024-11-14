@@ -1,13 +1,16 @@
 import './App.css';
-import * as Three from 'three';
 import * as contentful from 'contentful';
 import React, { useMemo, useState } from 'react';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { useEffect, useRef } from 'react';
+// import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { useEffect } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, useGLTF } from '@react-three/drei';
 
 const App = () => {
   const [data, setData] = useState([]);
-  const canvasRef = useRef(null);
+  // const [cameraPosition, setCameraPosition] = useState([0, 0, 0]);
+
+  // const canvasRef = useRef(null);
   const client = useMemo(() => {
     return contentful.createClient({
       space: process.env.REACT_APP_SPACE,
@@ -16,6 +19,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    console.log(data);
     const fetchData = async () => {
       try {
         const res = await client.getEntries();
@@ -26,117 +30,155 @@ const App = () => {
       }
     };
     fetchData();
+    // eslint-disable-next-line
   }, [client]);
 
-  useEffect(() => {
-    if (!canvasRef.current) return;
+  function Model() {
+    const gltf = useGLTF('./gaming_room/scene.gltf');
 
-    const aspect = {
-      width: window.innerWidth,
-      height: window.innerHeight
-    };
+    return <primitive object={gltf.scene} position={[0, -4, 0]} />;
+  }
 
-    const scene = new Three.Scene();
-    // scene.background = new Three.Color('#1d1b1b');
+  // useEffect(() => {
+  //   if (!canvasRef.current) return;
 
-    const camera = new Three.PerspectiveCamera(
-      75,
-      aspect.width / aspect.height,
-      0.01,
-      2000
-    );
-    camera.position.z = 6;
-    const rerenderer = new Three.WebGLRenderer({
-      canvas: canvasRef.current,
-      alpha: true
-    });
-    rerenderer.setSize(aspect.width, aspect.height);
-    const orbitControls = new OrbitControls(camera, rerenderer.domElement);
-    orbitControls.enableDamping = true;
-    rerenderer.render(scene, camera);
-    orbitControls.addEventListener('change', () => {
-      rerenderer.render(scene, camera);
-    });
-    const numberOfPoints = 1000;
-    const geometry = new Three.BufferGeometry();
-    const verticesArray = new Float32Array(numberOfPoints * 3);
+  //   const aspect = {
+  //     width: window.innerWidth,
+  //     height: window.innerHeight
+  //   };
 
-    for (let i = 0; i < numberOfPoints * 3; i++) {
-      verticesArray[i] = (Math.random() - 0.5) * 9;
-    }
-    geometry.setAttribute(
-      'position',
-      new Three.BufferAttribute(verticesArray, 3)
-    );
-    const material = new Three.PointsMaterial({ color: 'lightBlue' });
-    material.size = 0.02;
-    const points = new Three.Points(geometry, material);
-    scene.add(points);
+  //   const scene = new Three.Scene();
+  //   // scene.background = new Three.Color('#1d1b1b');
 
-    // const boxMaterials = [
-    //   new Three.MeshBasicMaterial({ color: '#faaf18', wireframe: true }),
-    //   new Three.MeshBasicMaterial({ color: '#18fa20', wireframe: true }),
-    //   new Three.MeshBasicMaterial({ color: '#18faf6', wireframe: true }),
-    //   new Three.MeshBasicMaterial({ color: '#f576ad', wireframe: true }),
-    //   new Three.MeshBasicMaterial({ color: '#e01017', wireframe: true }),
-    //   new Three.MeshBasicMaterial({ color: '#1876fa', wireframe: true }),
-    //   new Three.MeshBasicMaterial({
-    //     color: '#ec17ff',
-    //     wireframe: true
-    //   })
-    // ];
-    // const x = new Three.MeshBasicMaterial({
-    //   color: '#ffbd2e',
-    //   wireframe: true
-    // });
-    // const sphere = new Three.SphereGeometry(4, 32, 64);
-    // const box = new Three.BoxGeometry(1, 1, 1, 32, 32, 32);
-    // const mesh = new Three.Mesh(sphere, x);
-    // const boxMesh = new Three.Mesh(box, boxMaterials);
-    // scene.add(boxMesh);
-    // scene.add(mesh);
+  //   const camera = new Three.PerspectiveCamera(
+  //     75,
+  //     aspect.width / aspect.height,
+  //     0.01,
+  //     2000
+  //   );
+  //   camera.position.z = 6;
+  //   const rerenderer = new Three.WebGLRenderer({
+  //     canvas: canvasRef.current,
+  //     alpha: true
+  //   });
+  //   rerenderer.setSize(aspect.width, aspect.height);
+  //   const orbitControls = new OrbitControls(camera, rerenderer.domElement);
+  //   orbitControls.enableDamping = true;
+  //   rerenderer.render(scene, camera);
+  //   orbitControls.addEventListener('change', () => {
+  //     rerenderer.render(scene, camera);
+  //   });
+  //   const numberOfPoints = 1000;
+  //   const geometry = new Three.BufferGeometry();
+  //   const verticesArray = new Float32Array(numberOfPoints * 3);
 
-    // scene.add(camera);
-    let winAnimate;
-    const animate = () => {
-      points.rotation.x += 0.005;
-      points.rotation.y += 0.001;
+  //   for (let i = 0; i < numberOfPoints * 3; i++) {
+  //     verticesArray[i] = (Math.random() - 0.5) * 9;
+  //   }
+  //   geometry.setAttribute(
+  //     'position',
+  //     new Three.BufferAttribute(verticesArray, 3)
+  //   );
+  //   const material = new Three.PointsMaterial({ color: 'lightBlue' });
+  //   material.size = 0.02;
+  //   const points = new Three.Points(geometry, material);
+  //   scene.add(points);
 
-      rerenderer.render(scene, camera);
+  //   // const boxMaterials = [
+  //   //   new Three.MeshBasicMaterial({ color: '#faaf18', wireframe: true }),
+  //   //   new Three.MeshBasicMaterial({ color: '#18fa20', wireframe: true }),
+  //   //   new Three.MeshBasicMaterial({ color: '#18faf6', wireframe: true }),
+  //   //   new Three.MeshBasicMaterial({ color: '#f576ad', wireframe: true }),
+  //   //   new Three.MeshBasicMaterial({ color: '#e01017', wireframe: true }),
+  //   //   new Three.MeshBasicMaterial({ color: '#1876fa', wireframe: true }),
+  //   //   new Three.MeshBasicMaterial({
+  //   //     color: '#ec17ff',
+  //   //     wireframe: true
+  //   //   })
+  //   // ];
+  //   // const x = new Three.MeshBasicMaterial({
+  //   //   color: '#ffbd2e',
+  //   //   wireframe: true
+  //   // });
+  //   // const sphere = new Three.SphereGeometry(4, 32, 64);
+  //   // const box = new Three.BoxGeometry(1, 1, 1, 32, 32, 32);
+  //   // const mesh = new Three.Mesh(sphere, x);
+  //   // const boxMesh = new Three.Mesh(box, boxMaterials);
+  //   // scene.add(boxMesh);
+  //   // scene.add(mesh);
 
-      winAnimate = window.requestAnimationFrame(animate);
-    };
-    animate();
-    const handleResize = () => {
-      const aspect = {
-        width: window.innerWidth,
-        height: window.innerHeight
-      };
-      camera.aspect = aspect.width / aspect.height;
-      camera.updateProjectionMatrix();
-      rerenderer.setSize(aspect.width, aspect.height);
-    };
-    window.addEventListener('resize', handleResize);
+  //   // scene.add(camera);
+  //   let winAnimate;
+  //   const animate = () => {
+  //     points.rotation.x += 0.005;
+  //     points.rotation.y += 0.001;
 
-    return () => {
-      window.cancelAnimationFrame(winAnimate);
+  //     rerenderer.render(scene, camera);
 
-      window.removeEventListener('resize', handleResize);
+  //     winAnimate = window.requestAnimationFrame(animate);
+  //   };
+  //   animate();
+  //   const handleResize = () => {
+  //     const aspect = {
+  //       width: window.innerWidth,
+  //       height: window.innerHeight
+  //     };
+  //     camera.aspect = aspect.width / aspect.height;
+  //     camera.updateProjectionMatrix();
+  //     rerenderer.setSize(aspect.width, aspect.height);
+  //   };
+  //   window.addEventListener('resize', handleResize);
 
-      rerenderer.dispose();
-      orbitControls.dispose();
-    };
-  }, [data]);
+  //   return () => {
+  //     window.cancelAnimationFrame(winAnimate);
 
-  return data[0] ? (
-    <article className="container">
-      <canvas ref={canvasRef}></canvas>
-      <h1 className="title">{data[0].fields.title}</h1>
-      <img src={data[0].fields.logo.fields.file.url} alt="app logo" />
-    </article>
-  ) : (
-    <h1 className="title">Loading...</h1>
+  //     window.removeEventListener('resize', handleResize);
+
+  //     rerenderer.dispose();
+  //     orbitControls.dispose();
+  //   };
+  // }, [data]);
+
+  return (
+    <div className="model">
+      <Canvas camera={{ position: [8, 3, 0], near: 0.01, far: 1000 }}>
+        <ambientLight intensity={1} color="#ffffff" /> {/* White light */}
+        <directionalLight
+          intensity={1}
+          position={[0, 30, 20]}
+          color="#ffffff"
+        />
+        <directionalLight
+          intensity={1}
+          position={[20, 0, 10]}
+          color="#d400ff"
+        />
+        <directionalLight
+          intensity={1}
+          position={[10, 0, 1.3]}
+          color="#e059c5"
+        />
+        <Model />
+        <OrbitControls
+          target={[0, 2, 0]} // Focus the center of the room
+          enablePan={false} // Disable panning
+          minDistance={1} // Minimum zoom to prevent getting too close
+          maxDistance={1} // Maximum zoom to prevent exiting the room
+          maxPolarAngle={Math.PI / 2} // Restrict vertical rotation to floor level
+          minPolarAngle={Math.PI / 4}
+        />
+      </Canvas>
+    </div>
   );
+  // data[0] ? (
+  //   <article className="container">
+
+  //     <h1 className="title">{data[0].fields.title}</h1>
+  //     <img src={data[0].fields.logo.fields.file.url} alt="app logo" />
+  //   </article>
+  // ) : (
+  //   <h1 className="title">Loading...</h1>
+  // );
 };
 
 export default App;
