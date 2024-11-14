@@ -1,15 +1,14 @@
 import './App.css';
 import * as contentful from 'contentful';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, Suspense } from 'react';
 // import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, useGLTF } from '@react-three/drei';
+import { OrbitControls, useGLTF, useProgress, Html } from '@react-three/drei';
 
 const App = () => {
   const [data, setData] = useState([]);
   // const [cameraPosition, setCameraPosition] = useState([0, 0, 0]);
-
   // const canvasRef = useRef(null);
   const client = useMemo(() => {
     return contentful.createClient({
@@ -34,9 +33,8 @@ const App = () => {
   }, [client]);
 
   function Model() {
-    const gltf = useGLTF('./gaming_room/scene.gltf');
-
-    return <primitive object={gltf.scene} position={[0, -4, 0]} />;
+    const { scene } = useGLTF('./gaming_room/scene.gltf');
+    return <primitive object={scene} position={[0, -4, 0]} />;
   }
 
   // useEffect(() => {
@@ -138,35 +136,47 @@ const App = () => {
   //     orbitControls.dispose();
   //   };
   // }, [data]);
-
+  function Loader() {
+    console.log('loading');
+    const { progress } = useProgress();
+    return (
+      <Html center>
+        <div style={{ color: 'white', fontSize: '2rem' }}>
+          Loading... {Math.round(progress)}%
+        </div>
+      </Html>
+    );
+  }
   return (
     <div className="model">
       <Canvas camera={{ position: [8, 3, 0], near: 0.01, far: 1000 }}>
-        <ambientLight intensity={1} color="#ffffff" /> {/* White light */}
-        <directionalLight
-          intensity={1}
-          position={[0, 30, 20]}
-          color="#ffffff"
-        />
-        <directionalLight
-          intensity={1}
-          position={[20, 0, 10]}
-          color="#d400ff"
-        />
-        <directionalLight
-          intensity={1}
-          position={[10, 0, 1.3]}
-          color="#e059c5"
-        />
-        <Model />
-        <OrbitControls
-          target={[0, 2, 0]} // Focus the center of the room
-          enablePan={false} // Disable panning
-          minDistance={1} // Minimum zoom to prevent getting too close
-          maxDistance={1} // Maximum zoom to prevent exiting the room
-          maxPolarAngle={Math.PI / 2} // Restrict vertical rotation to floor level
-          minPolarAngle={Math.PI / 4}
-        />
+        <Suspense fallback={<Loader></Loader>}>
+          <ambientLight intensity={1} color="#ffffff" /> {/* White light */}
+          <directionalLight
+            intensity={1}
+            position={[0, 30, 20]}
+            color="#ffffff"
+          />
+          <directionalLight
+            intensity={1}
+            position={[20, 0, 10]}
+            color="#d400ff"
+          />
+          <directionalLight
+            intensity={1}
+            position={[10, 0, 1.3]}
+            color="#e059c5"
+          />
+          <Model />
+          <OrbitControls
+            target={[0, 2, 0]} // Focus the center of the room
+            enablePan={false} // Disable panning
+            minDistance={1} // Minimum zoom to prevent getting too close
+            maxDistance={1} // Maximum zoom to prevent exiting the room
+            maxPolarAngle={Math.PI / 2} // Restrict vertical rotation to floor level
+            minPolarAngle={Math.PI / 4}
+          />
+        </Suspense>
       </Canvas>
     </div>
   );
