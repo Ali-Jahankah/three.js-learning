@@ -1,15 +1,14 @@
 import './App.css';
 import * as contentful from 'contentful';
 import React, { useMemo, useState, Suspense } from 'react';
-// import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
 import { useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, useGLTF, useProgress, Html } from '@react-three/drei';
 
 const App = () => {
   const [, setData] = useState([]);
-  // const [cameraPosition, setCameraPosition] = useState([0, 0, 0]);
-  // const canvasRef = useRef(null);
+
   const client = useMemo(() => {
     return contentful.createClient({
       space: process.env.REACT_APP_SPACE,
@@ -35,105 +34,6 @@ const App = () => {
     return <primitive object={scene} position={[0, -4, 0]} />;
   }
 
-  // useEffect(() => {
-  //   if (!canvasRef.current) return;
-
-  //   const aspect = {
-  //     width: window.innerWidth,
-  //     height: window.innerHeight
-  //   };
-
-  //   const scene = new Three.Scene();
-  //   // scene.background = new Three.Color('#1d1b1b');
-
-  //   const camera = new Three.PerspectiveCamera(
-  //     75,
-  //     aspect.width / aspect.height,
-  //     0.01,
-  //     2000
-  //   );
-  //   camera.position.z = 6;
-  //   const rerenderer = new Three.WebGLRenderer({
-  //     canvas: canvasRef.current,
-  //     alpha: true
-  //   });
-  //   rerenderer.setSize(aspect.width, aspect.height);
-  //   const orbitControls = new OrbitControls(camera, rerenderer.domElement);
-  //   orbitControls.enableDamping = true;
-  //   rerenderer.render(scene, camera);
-  //   orbitControls.addEventListener('change', () => {
-  //     rerenderer.render(scene, camera);
-  //   });
-  //   const numberOfPoints = 1000;
-  //   const geometry = new Three.BufferGeometry();
-  //   const verticesArray = new Float32Array(numberOfPoints * 3);
-
-  //   for (let i = 0; i < numberOfPoints * 3; i++) {
-  //     verticesArray[i] = (Math.random() - 0.5) * 9;
-  //   }
-  //   geometry.setAttribute(
-  //     'position',
-  //     new Three.BufferAttribute(verticesArray, 3)
-  //   );
-  //   const material = new Three.PointsMaterial({ color: 'lightBlue' });
-  //   material.size = 0.02;
-  //   const points = new Three.Points(geometry, material);
-  //   scene.add(points);
-
-  //   // const boxMaterials = [
-  //   //   new Three.MeshBasicMaterial({ color: '#faaf18', wireframe: true }),
-  //   //   new Three.MeshBasicMaterial({ color: '#18fa20', wireframe: true }),
-  //   //   new Three.MeshBasicMaterial({ color: '#18faf6', wireframe: true }),
-  //   //   new Three.MeshBasicMaterial({ color: '#f576ad', wireframe: true }),
-  //   //   new Three.MeshBasicMaterial({ color: '#e01017', wireframe: true }),
-  //   //   new Three.MeshBasicMaterial({ color: '#1876fa', wireframe: true }),
-  //   //   new Three.MeshBasicMaterial({
-  //   //     color: '#ec17ff',
-  //   //     wireframe: true
-  //   //   })
-  //   // ];
-  //   // const x = new Three.MeshBasicMaterial({
-  //   //   color: '#ffbd2e',
-  //   //   wireframe: true
-  //   // });
-  //   // const sphere = new Three.SphereGeometry(4, 32, 64);
-  //   // const box = new Three.BoxGeometry(1, 1, 1, 32, 32, 32);
-  //   // const mesh = new Three.Mesh(sphere, x);
-  //   // const boxMesh = new Three.Mesh(box, boxMaterials);
-  //   // scene.add(boxMesh);
-  //   // scene.add(mesh);
-
-  //   // scene.add(camera);
-  //   let winAnimate;
-  //   const animate = () => {
-  //     points.rotation.x += 0.005;
-  //     points.rotation.y += 0.001;
-
-  //     rerenderer.render(scene, camera);
-
-  //     winAnimate = window.requestAnimationFrame(animate);
-  //   };
-  //   animate();
-  //   const handleResize = () => {
-  //     const aspect = {
-  //       width: window.innerWidth,
-  //       height: window.innerHeight
-  //     };
-  //     camera.aspect = aspect.width / aspect.height;
-  //     camera.updateProjectionMatrix();
-  //     rerenderer.setSize(aspect.width, aspect.height);
-  //   };
-  //   window.addEventListener('resize', handleResize);
-
-  //   return () => {
-  //     window.cancelAnimationFrame(winAnimate);
-
-  //     window.removeEventListener('resize', handleResize);
-
-  //     rerenderer.dispose();
-  //     orbitControls.dispose();
-  //   };
-  // }, [data]);
   function Loader() {
     console.log('loading');
     const { progress } = useProgress();
@@ -178,15 +78,6 @@ const App = () => {
       </Canvas>
     </div>
   );
-  // data[0] ? (
-  //   <article className="container">
-
-  //     <h1 className="title">{data[0].fields.title}</h1>
-  //     <img src={data[0].fields.logo.fields.file.url} alt="app logo" />
-  //   </article>
-  // ) : (
-  //   <h1 className="title">Loading...</h1>
-  // );
 };
 
 export default App;
