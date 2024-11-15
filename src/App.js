@@ -7,7 +7,7 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, useGLTF, useProgress, Html } from '@react-three/drei';
 
 const App = () => {
-  const [data, setData] = useState([]);
+  const [, setData] = useState([]);
   // const [cameraPosition, setCameraPosition] = useState([0, 0, 0]);
   // const canvasRef = useRef(null);
   const client = useMemo(() => {
