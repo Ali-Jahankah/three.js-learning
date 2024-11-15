@@ -18,12 +18,10 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    console.log(data);
     const fetchData = async () => {
       try {
         const res = await client.getEntries();
         setData(res.items);
-        console.log('Contentful Data:', res.items);
       } catch (error) {
         console.log(error);
       }
@@ -33,7 +31,7 @@ const App = () => {
   }, [client]);
 
   function Model() {
-    const { scene } = useGLTF('./gaming_room/scene.gltf');
+    const { scene } = useGLTF('./gaming_room/scene.gltf', true);
     return <primitive object={scene} position={[0, -4, 0]} />;
   }
 
