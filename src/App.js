@@ -1,14 +1,8 @@
 import './App.css';
 import * as contentful from 'contentful';
-import React, { useMemo, useState, Suspense, useEffect, useRef } from 'react';
+import React, { useMemo, useState, Suspense, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import {
-  OrbitControls,
-  useGLTF,
-  useProgress,
-  Html,
-  PositionalAudio
-} from '@react-three/drei';
+import { OrbitControls, useGLTF, useProgress, Html } from '@react-three/drei';
 
 const App = () => {
   const [data, setData] = useState([]);
@@ -32,23 +26,15 @@ const App = () => {
     fetchData();
   }, [client]);
 
-  const audioRef = useRef(null);
-
   function Model() {
-    const { scene } = useGLTF('./gaming_room/scene.gltf', true);
+    const { scene } = useGLTF('./gaming_room/untitled.gltf', true);
+
     return (
       <primitive
         object={scene}
-        position={[0, -4, 0]}
+        position={[0, 0, 0]}
         onClick={(e) => {
           console.log(e.intersections[0].object.name);
-          if (e.intersections[0].object.name === 'Object_24') {
-            if (audioRef.current) {
-              audioRef.current.isPlaying
-                ? audioRef.current.pause()
-                : audioRef.current.play();
-            }
-          }
         }}
       />
     );
@@ -75,36 +61,14 @@ const App = () => {
 
   return (
     <div className="model">
-      <Canvas camera={{ position: [8, 3, 0], near: 0.01, far: 1000 }}>
+      <Canvas>
         <Suspense fallback={<Loader />}>
-          <ambientLight intensity={1} color="#ffffff" />
-          <directionalLight
-            intensity={1}
-            position={[0, 30, 20]}
-            color="#ffffff"
-          />
-          <directionalLight
-            intensity={1}
-            position={[20, 0, 10]}
-            color="#d400ff"
-          />
-          <directionalLight
-            intensity={1}
-            position={[10, 0, 1.3]}
-            color="#e059c5"
-          />
-
           <Model />
-
-          {data.length > 0 && data[0].fields.music && (
-            <PositionalAudio
-              url={data[0].fields.music.fields.file.url}
-              ref={audioRef}
-              loop
-              distance={0.1}
-            />
-          )}
-
+          <directionalLight
+            position={[5, 10, 5]} // Adjust to illuminate from above
+            intensity={1} // Adjust brightness
+            castShadow
+          />
           <OrbitControls
             target={[0, 2, 0]}
             enablePan={false}
