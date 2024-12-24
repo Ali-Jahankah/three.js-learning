@@ -5,7 +5,7 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, useGLTF, useProgress, Html } from '@react-three/drei';
 
 const App = () => {
-  const [data, setData] = useState([]);
+  const [, setData] = useState([]);
   const client = useMemo(() => {
     return contentful.createClient({
       space: process.env.REACT_APP_SPACE,
