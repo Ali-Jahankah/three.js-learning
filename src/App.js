@@ -64,11 +64,13 @@ const App = () => {
       <Canvas>
         <Suspense fallback={<Loader />}>
           <Model />
-          <directionalLight
+          {/* <directionalLight
             position={[5, 10, 5]} // Adjust to illuminate from above
-            intensity={1} // Adjust brightness
+            intensity={3} // Adjust brightness
             castShadow
-          />
+          /> */}
+          <ambientLight intensity={1.5} color={0xffffff} />
+
           <OrbitControls
             target={[0, 2, 0]}
             enablePan={false}
