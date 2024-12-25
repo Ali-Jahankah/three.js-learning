@@ -1,11 +1,17 @@
 import './App.css';
 import * as contentful from 'contentful';
-import React, { useMemo, useState, Suspense, useEffect } from 'react';
+import React, { useMemo, useState, Suspense, useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, useGLTF, useProgress, Html } from '@react-three/drei';
+import {
+  OrbitControls,
+  useGLTF,
+  useProgress,
+  Html,
+  PositionalAudio
+} from '@react-three/drei';
 
 const App = () => {
-  const [, setData] = useState([]);
+  const [data, setData] = useState([]);
   const client = useMemo(() => {
     return contentful.createClient({
       space: process.env.REACT_APP_SPACE,
@@ -25,6 +31,7 @@ const App = () => {
     };
     fetchData();
   }, [client]);
+  const audioRef = useRef(null);
 
   function Model() {
     const { scene } = useGLTF('./gaming_room/untitled.gltf', true);
@@ -34,7 +41,15 @@ const App = () => {
         object={scene}
         position={[0, 0, 0]}
         onClick={(e) => {
-          console.log(e.intersections[0].object.name);
+          e.stopPropagation();
+          if (/Cube046/i.test(e.intersections[0].object.name)) {
+            if (audioRef.current) {
+              console.log('asd');
+              audioRef.current.isPlaying
+                ? audioRef.current.pause()
+                : audioRef.current.play();
+            }
+          }
         }}
       />
     );
@@ -64,12 +79,15 @@ const App = () => {
       <Canvas>
         <Suspense fallback={<Loader />}>
           <Model />
-          {/* <directionalLight
-            position={[5, 10, 5]} // Adjust to illuminate from above
-            intensity={3} // Adjust brightness
-            castShadow
-          /> */}
-          <ambientLight intensity={1.5} color={0xffffff} />
+          {data.length > 0 && data[0].fields.music && (
+            <PositionalAudio
+              url={data[0].fields.music.fields.file.url}
+              ref={audioRef}
+              loop
+              distance={0.5}
+            />
+          )}
+          <ambientLight intensity={0.5} color={0xffffff} />
 
           <OrbitControls
             target={[0, 2, 0]}
