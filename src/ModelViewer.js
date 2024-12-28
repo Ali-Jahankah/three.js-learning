@@ -7,10 +7,13 @@ import {
   useProgress,
   CameraControls
 } from '@react-three/drei';
+import AboutMe from './pages/AboutMe';
+import FindMe from './pages/FindMe';
 
 const ModelViewer = ({ audioData }) => {
   const [activeCamera, setActiveCamera] = useState('main-cam');
   const [cameraPos, setCameraPos] = useState({ x: 0, y: 0, z: 0 });
+  const [page, setPage] = useState();
   const audioRef = useRef(null);
   const cameraControlsRef = useRef(null);
 
@@ -43,6 +46,7 @@ const ModelViewer = ({ audioData }) => {
           cameraControlsRef={cameraControlsRef}
           cameraPos={cameraPos}
           setCameraPos={setCameraPos}
+          setPage={setPage}
         />
         <CameraControls
           ref={cameraControlsRef}
@@ -59,7 +63,7 @@ const ModelViewer = ({ audioData }) => {
         )}
         <ambientLight intensity={0.5} color={0xffffff} />
 
-        {activeCamera === 'laptop-cam' && (
+        {activeCamera === 'laptop-cam' && page && (
           <Html
             position={[9, 0.274, 5.04]}
             transform
@@ -71,39 +75,21 @@ const ModelViewer = ({ audioData }) => {
                 width: '355px',
                 height: '205px',
                 padding: '0.5em',
-                fontSize: '0.5rem',
-                lineHeight: '1.5em',
-                backgroundColor: 'black',
-                color: 'lime',
+                backgroundColor: '#262525',
                 overflowY: 'auto',
-                justifyContent: 'center',
-                alignItems: 'center'
+                position: 'relative'
               }}
             >
-              <p>
-                Hello! My name is Ali, and I’m a 28-year-old developer from the
-                land of Persia. I’m not just working as a developer—I’m living
-                as one. I’m a passionate full-stack JavaScript developer with
-                experience in DevOps and cloud technologies.
-              </p>
-              <br />
-              <p style={{ color: '#ffffff' }}>
-                I have over <b>80 repositories</b> on GitHub, showcasing my solo
-                and team projects.
-              </p>
-              <p style={{ color: '#ffffff' }}>
-                If you'd like to learn more about me, view my CV, or connect
-                elsewhere, please explore the options displayed on the wall.
-              </p>
-              <br />
-              <p
-                style={{
-                  color: '#cb0000'
-                }}
-              >
-                By the way, I’m a metalhead guitar player as well. I have three
-                weapons at my home: my laptop, my guitar, and my phone.
-              </p>
+              {page === 'aboutmebox' ? (
+                <AboutMe />
+              ) : page === 'findmebox' ? (
+                <FindMe />
+              ) : (
+                <p>
+                  To see content please return too room and press any options on
+                  the wall!{' '}
+                </p>
+              )}
               <button
                 onClick={() => {
                   setActiveCamera('main-cam');
@@ -115,11 +101,14 @@ const ModelViewer = ({ audioData }) => {
                   fontSize: '0.8rem',
                   fontWeight: 'bold',
                   color: 'black',
-                  backgroundColor: 'lime',
+                  backgroundColor: '#e8d229',
                   border: 'none',
                   borderRadius: '5px',
                   cursor: 'pointer',
-                  textTransform: 'uppercase'
+                  textTransform: 'uppercase',
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0
                 }}
               >
                 Back to ROOM
@@ -138,7 +127,8 @@ const Model = ({
   setCameraPos,
   audioRef,
   cameraControlsRef,
-  cameraPos
+  cameraPos,
+  setPage
 }) => {
   const { scene, cameras } = useGLTF('./gaming_room/room.gltf', true);
   const { camera } = useThree();
@@ -180,18 +170,9 @@ const Model = ({
 
         camera.updateProjectionMatrix();
 
-        camera.position.set(0, 0, 0); // Adjust the camera position
+        camera.position.set(0, 0, 0);
 
-        // Ensure the camera is looking at the front wall (or the target you want)
-        cameraControlsRef.current.setLookAt(
-          0,
-          0,
-          0, // Target point (front wall or desired point)
-          5,
-          0,
-          0, // Camera position (start looking from here)
-          true // Smooth transition
-        );
+        cameraControlsRef.current.setLookAt(0, 0, 0, 5, 0, 0, true);
         camera.updateProjectionMatrix();
       }
     }
@@ -201,22 +182,35 @@ const Model = ({
     <primitive
       object={scene}
       onClick={(e) =>
-        handleObjectClick(e, setActiveCamera, audioRef, setCameraPos)
+        handleObjectClick(e, setActiveCamera, audioRef, setCameraPos, setPage)
       }
     />
   );
 };
 
-const handleObjectClick = (e, setActiveCamera, audioRef, setCameraPos) => {
+const handleObjectClick = (
+  e,
+  setActiveCamera,
+  audioRef,
+  setCameraPos,
+  setPage
+) => {
   e.stopPropagation();
   const clickedObject = e.intersections[0]?.object;
-  if (clickedObject?.name === 'monitor_5') {
+  if (
+    clickedObject?.name === 'cvbox' ||
+    clickedObject?.name === 'aboutmebox' ||
+    clickedObject?.name === 'findmebox' ||
+    clickedObject?.name === 'projectsbox' ||
+    clickedObject?.name === 'blogsbox'
+  ) {
     setActiveCamera('laptop-cam');
     setCameraPos({
       x: 3,
       y: 0.3,
       z: 5
     });
+    setPage(clickedObject?.name);
   }
 
   if (clickedObject?.name.includes('amp') && audioRef.current) {
