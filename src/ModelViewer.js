@@ -46,7 +46,7 @@ const ModelViewer = ({ audioData }) => {
         />
         <CameraControls
           ref={cameraControlsRef}
-          maxDistance={8}
+          maxDistance={4}
           minDistance={1}
         />
         {audioData && audioData.fields?.file?.url && (
@@ -144,6 +144,13 @@ const Model = ({
   const { camera } = useThree();
 
   useEffect(() => {
+    const widthCategory =
+      window.innerWidth < 600
+        ? 'small'
+        : window.innerWidth >= 600 && window.innerWidth < 800
+        ? 'medium'
+        : 'large';
+
     const activeCam = cameras.find((cam) => cam.name === activeCamera);
     if (activeCam && cameraControlsRef.current) {
       cameraControlsRef.current.setLookAt(
@@ -156,11 +163,35 @@ const Model = ({
         true
       );
       if (activeCam.name === 'laptop-cam') {
-        camera.fov = 25;
+        switch (widthCategory) {
+          case 'small':
+            camera.fov = 40;
+            break;
+          case 'medium':
+            camera.fov = 30;
+            break;
+          case 'large':
+            camera.fov = 25;
+            break;
+        }
         camera.updateProjectionMatrix();
       } else {
-        camera.fov = 55;
+        camera.fov = 80;
 
+        camera.updateProjectionMatrix();
+
+        camera.position.set(0, 0, 0); // Adjust the camera position
+
+        // Ensure the camera is looking at the front wall (or the target you want)
+        cameraControlsRef.current.setLookAt(
+          0,
+          0,
+          0, // Target point (front wall or desired point)
+          5,
+          0,
+          0, // Camera position (start looking from here)
+          true // Smooth transition
+        );
         camera.updateProjectionMatrix();
       }
     }
