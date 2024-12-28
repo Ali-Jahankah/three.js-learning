@@ -165,7 +165,7 @@ const Model = ({
       if (activeCam.name === 'laptop-cam') {
         switch (widthCategory) {
           case 'small':
-            camera.fov = 40;
+            camera.fov = 50;
             break;
           case 'medium':
             camera.fov = 30;
