@@ -107,8 +107,8 @@ const ModelViewer = ({ audioData }) => {
                   cursor: 'pointer',
                   textTransform: 'uppercase',
                   position: 'absolute',
-                  bottom: 0,
-                  left: 0
+                  bottom: '0.5em',
+                  left: ' 0.5em'
                 }}
               >
                 Back to ROOM

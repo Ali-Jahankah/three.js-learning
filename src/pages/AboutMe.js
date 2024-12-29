@@ -12,10 +12,13 @@ const AboutMe = () => {
       }}
     >
       <p>
-        Hello! My name is Ali, and I’m a 28-year-old developer from the land of
-        Persia. I’m not just working as a developer—I’m living as one. I’m a
-        passionate full-stack JavaScript developer with experience in DevOps and
-        cloud technologies.
+        Hello! My name is Ali, a 28-year-old boy from the land of{' '}
+        <strong>Persia 🇮🇷</strong>. I’m not just working as a developer; I’m
+        living as one.
+        <br />
+        I’m a passionate full-stack JavaScript developer based in{' '}
+        <strong>London 🏴󠁧󠁢󠁥󠁮󠁧󠁿</strong> with some experience in DevOps and Cloud as
+        well.
       </p>
       <br />
       <p style={{ color: '#ffffff' }}>
@@ -32,8 +35,10 @@ const AboutMe = () => {
           color: '#cb0000'
         }}
       >
-        By the way, I’m a metalhead guitar player as well. I have three weapons
-        at my home: my laptop, my guitar, and my phone.
+        By the way, I’m a MetalHead guitar player as well. Candlemass, Uaral and
+        Gojira are afew of my favourite bands. You can contact me via Email as
+        well.
+        <p style={{ textAlign: 'center' }}>aral2@yahoo.com</p>
       </p>
     </div>
   );
