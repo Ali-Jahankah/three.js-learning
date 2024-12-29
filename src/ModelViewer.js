@@ -10,7 +10,7 @@ import {
 import AboutMe from './pages/AboutMe';
 import FindMe from './pages/FindMe';
 
-const ModelViewer = ({ audioData }) => {
+const ModelViewer = ({ audioData, cv }) => {
   const [activeCamera, setActiveCamera] = useState('main-cam');
   const [cameraPos, setCameraPos] = useState({ x: 0, y: 0, z: 0 });
   const [page, setPage] = useState();
@@ -47,6 +47,7 @@ const ModelViewer = ({ audioData }) => {
           cameraPos={cameraPos}
           setCameraPos={setCameraPos}
           setPage={setPage}
+          cv={cv}
         />
         <CameraControls
           ref={cameraControlsRef}
@@ -128,7 +129,8 @@ const Model = ({
   audioRef,
   cameraControlsRef,
   cameraPos,
-  setPage
+  setPage,
+  cv
 }) => {
   const { scene, cameras } = useGLTF('./gaming_room/room.gltf', true);
   const { camera } = useThree();
@@ -181,9 +183,24 @@ const Model = ({
   return (
     <primitive
       object={scene}
-      onClick={(e) =>
-        handleObjectClick(e, setActiveCamera, audioRef, setCameraPos, setPage)
-      }
+      onClick={(e) => {
+        if (e.intersections[0]?.object?.name === 'cvbox') {
+          const link = document.createElement('a');
+          link.href = cv.fields.file.url;
+          link.download = 'Ali_Jahankhah_CV.docx';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } else {
+          handleObjectClick(
+            e,
+            setActiveCamera,
+            audioRef,
+            setCameraPos,
+            setPage
+          );
+        }
+      }}
     />
   );
 };
@@ -198,7 +215,6 @@ const handleObjectClick = (
   e.stopPropagation();
   const clickedObject = e.intersections[0]?.object;
   if (
-    clickedObject?.name === 'cvbox' ||
     clickedObject?.name === 'aboutmebox' ||
     clickedObject?.name === 'findmebox' ||
     clickedObject?.name === 'projectsbox' ||

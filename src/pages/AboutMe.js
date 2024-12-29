@@ -38,8 +38,8 @@ const AboutMe = () => {
         By the way, I’m a MetalHead guitar player as well. Candlemass, Uaral and
         Gojira are afew of my favourite bands. You can contact me via Email as
         well.
-        <p style={{ textAlign: 'center' }}>aral2@yahoo.com</p>
       </p>
+      <p style={{ textAlign: 'center' }}>aral2@yahoo.com</p>
     </div>
   );
 };

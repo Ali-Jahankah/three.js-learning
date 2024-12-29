@@ -43,7 +43,10 @@ const App = () => {
     <div className="model">
       <Suspense fallback={<Loader />}>
         {data.length > 0 ? (
-          <ModelViewer audioData={data[0].fields.music} />
+          <ModelViewer
+            audioData={data[0].fields.music}
+            cv={data[0].fields.cv}
+          />
         ) : (
           <Loader />
         )}
