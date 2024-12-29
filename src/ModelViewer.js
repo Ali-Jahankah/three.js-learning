@@ -59,7 +59,8 @@ const ModelViewer = ({ audioData, cv }) => {
             url={audioData.fields.file.url}
             ref={audioRef}
             loop
-            distance={0.5}
+            distance={1000}
+            setDistanceModel="linear"
           />
         )}
         <ambientLight intensity={0.5} color={0xffffff} />
@@ -168,13 +169,13 @@ const Model = ({
         }
         camera.updateProjectionMatrix();
       } else {
-        camera.fov = 80;
+        camera.fov = 100;
 
         camera.updateProjectionMatrix();
 
         camera.position.set(0, 0, 0);
 
-        cameraControlsRef.current.setLookAt(0, 0, 0, 5, 0, 0, true);
+        cameraControlsRef.current.setLookAt(0, 2, 0, 5, 0, 0, true);
         camera.updateProjectionMatrix();
       }
     }
