@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react';
-import { Canvas, useThree } from '@react-three/fiber';
+import { Canvas, useThree, useFrame } from '@react-three/fiber';
 import {
   useGLTF,
   Html,
@@ -49,11 +49,7 @@ const ModelViewer = ({ audioData, cv }) => {
           setPage={setPage}
           cv={cv}
         />
-        <CameraControls
-          ref={cameraControlsRef}
-          maxDistance={4}
-          minDistance={1}
-        />
+        <CameraControls ref={cameraControlsRef} />
         {audioData && audioData.fields?.file?.url && (
           <PositionalAudio
             url={audioData.fields.file.url}
@@ -64,7 +60,6 @@ const ModelViewer = ({ audioData, cv }) => {
           />
         )}
         <ambientLight intensity={0.5} color={0xffffff} />
-
         {activeCamera === 'laptop-cam' && page && (
           <Html
             position={[9, 0.274, 5.04]}
@@ -88,8 +83,8 @@ const ModelViewer = ({ audioData, cv }) => {
                 <FindMe />
               ) : (
                 <p>
-                  To see content please return too room and press any options on
-                  the wall!{' '}
+                  To see content please return to the room and press any options
+                  on the wall!
                 </p>
               )}
               <button
@@ -135,108 +130,131 @@ const Model = ({
 }) => {
   const { scene, cameras } = useGLTF('./gaming_room/room.gltf', true);
   const { camera } = useThree();
+  const cameraRef = useRef(camera);
 
   useEffect(() => {
+    const activeCam = cameras.find((cam) => cam.name === activeCamera);
     const widthCategory =
-      window.innerWidth < 600
+      window.innerWidth >= 340 && window.innerWidth < 450
+        ? 'mobile'
+        : window.innerWidth >= 450 && window.innerWidth < 600
         ? 'small'
         : window.innerWidth >= 600 && window.innerWidth < 800
         ? 'medium'
         : 'large';
-
-    const activeCam = cameras.find((cam) => cam.name === activeCamera);
-    if (activeCam && cameraControlsRef.current) {
-      cameraControlsRef.current.setLookAt(
-        activeCam.position.x,
-        activeCam.position.y,
-        activeCam.position.z,
-        cameraPos.x,
-        cameraPos.y,
-        cameraPos.z,
-        true
-      );
-      if (activeCam.name === 'laptop-cam') {
-        switch (widthCategory) {
-          case 'small':
-            camera.fov = 50;
-            break;
-          case 'medium':
-            camera.fov = 30;
-            break;
-          case 'large':
-            camera.fov = 25;
-            break;
-        }
-        camera.updateProjectionMatrix();
-      } else {
-        camera.fov = 100;
-
-        camera.updateProjectionMatrix();
-
-        camera.position.set(0, 0, 0);
-
+    cameraRef.current = activeCam;
+    if (activeCam) {
+      if (activeCam.name === 'main-cam') {
+        cameraRef.current.position.set(0, 0, 0);
+        cameraRef.current.updateMatrix();
+        cameraRef.current.updateMatrixWorld();
         cameraControlsRef.current.setLookAt(0, 2, 0, 5, 0, 0, true);
-        camera.updateProjectionMatrix();
+      }
+
+      if (activeCam.name === 'laptop-cam') {
+        if (widthCategory === 'large') {
+          cameraRef.current.position.set(
+            cameraPos.x + 13,
+            cameraPos.y,
+            cameraPos.z
+          );
+          cameraRef.current.updateMatrix();
+          cameraRef.current.updateMatrixWorld();
+          cameraControlsRef.current.setLookAt(
+            cameraPos.x + 3.8,
+            cameraPos.y,
+            cameraPos.z,
+            cameraPos.x + 8,
+            cameraPos.y,
+            cameraPos.z,
+            true
+          );
+        }
+        if (widthCategory === 'medium') {
+          cameraRef.current.position.set(cameraPos.x, cameraPos.y, cameraPos.z);
+          cameraRef.current.updateMatrix();
+          cameraRef.current.updateMatrixWorld();
+          cameraControlsRef.current.setLookAt(
+            cameraPos.x + 3,
+            cameraPos.y,
+            cameraPos.z,
+            cameraPos.x + 8,
+            cameraPos.y,
+            cameraPos.z,
+            true
+          );
+        }
+        if (widthCategory === 'small') {
+          cameraRef.current.position.set(cameraPos.x, cameraPos.y, cameraPos.z);
+          cameraRef.current.updateMatrix();
+          cameraRef.current.updateMatrixWorld();
+          cameraControlsRef.current.setLookAt(
+            cameraPos.x + 2,
+            cameraPos.y,
+            cameraPos.z,
+            cameraPos.x + 8,
+            cameraPos.y,
+            cameraPos.z,
+            true
+          );
+        }
+        if (widthCategory === 'mobile') {
+          cameraRef.current.position.set(cameraPos.x, cameraPos.y, cameraPos.z);
+          cameraRef.current.updateMatrix();
+          cameraRef.current.updateMatrixWorld();
+          cameraControlsRef.current.setLookAt(
+            cameraPos.x + 1.5,
+            cameraPos.y,
+            cameraPos.z,
+            cameraPos.x + 8,
+            cameraPos.y,
+            cameraPos.z,
+            true
+          );
+        }
       }
     }
-  }, [activeCamera, cameraPos]);
+  }, [activeCamera, window.innerWidth]);
 
   return (
     <primitive
       object={scene}
       onClick={(e) => {
-        if (e.intersections[0]?.object?.name === 'cvbox') {
+        const clickedObject = e.intersections[0]?.object;
+        e.stopPropagation();
+        if (clickedObject?.name === 'cvbox') {
           const link = document.createElement('a');
           link.href = cv.fields.file.url;
           link.download = 'Ali_Jahankhah_CV.docx';
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
-        } else {
-          handleObjectClick(
-            e,
-            setActiveCamera,
-            audioRef,
-            setCameraPos,
-            setPage
-          );
+        }
+        if (
+          clickedObject?.name === 'aboutmebox' ||
+          clickedObject?.name === 'findmebox' ||
+          clickedObject?.name === 'projectsbox' ||
+          clickedObject?.name === 'blogsbox'
+        ) {
+          setActiveCamera('laptop-cam');
+          setCameraPos({
+            x: 3,
+            y: 0.3,
+            z: 5
+          });
+          setPage(clickedObject?.name);
+        }
+
+        if (clickedObject?.name.includes('amp') && audioRef.current) {
+          if (audioRef.current.isPlaying) {
+            audioRef.current.pause();
+          } else {
+            audioRef.current.play();
+          }
         }
       }}
     />
   );
-};
-
-const handleObjectClick = (
-  e,
-  setActiveCamera,
-  audioRef,
-  setCameraPos,
-  setPage
-) => {
-  e.stopPropagation();
-  const clickedObject = e.intersections[0]?.object;
-  if (
-    clickedObject?.name === 'aboutmebox' ||
-    clickedObject?.name === 'findmebox' ||
-    clickedObject?.name === 'projectsbox' ||
-    clickedObject?.name === 'blogsbox'
-  ) {
-    setActiveCamera('laptop-cam');
-    setCameraPos({
-      x: 3,
-      y: 0.3,
-      z: 5
-    });
-    setPage(clickedObject?.name);
-  }
-
-  if (clickedObject?.name.includes('amp') && audioRef.current) {
-    if (audioRef.current.isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play();
-    }
-  }
 };
 
 export default ModelViewer;
