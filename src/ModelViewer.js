@@ -206,7 +206,7 @@ const Model = ({
         e.stopPropagation();
         if (clickedObject?.name === 'cvbox') {
           const link = document.createElement('a');
-          link.href = cv.fields.file.url;
+          link.href = `$https://{cv.fields.file.url}`;
           link.download = 'Ali_Jahankhah_CV.docx';
           document.body.appendChild(link);
           link.click();
