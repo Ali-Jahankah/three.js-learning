@@ -11,7 +11,7 @@ import AboutMe from './pages/AboutMe';
 import FindMe from './pages/FindMe';
 import Projects from './pages/Projects';
 
-const ModelViewer = ({ audioData, cv }) => {
+const ModelViewer = ({ audioData }) => {
   const [activeCamera, setActiveCamera] = useState('main-cam');
   const [cameraPos, setCameraPos] = useState({ x: 0, y: 0, z: 0 });
   const [page, setPage] = useState();
@@ -49,7 +49,6 @@ const ModelViewer = ({ audioData, cv }) => {
           cameraPos={cameraPos}
           setCameraPos={setCameraPos}
           setPage={setPage}
-          cv={cv}
         />
         <CameraControls ref={cameraControlsRef} />
         {audioData && audioData.fields?.file?.url && (
@@ -127,8 +126,7 @@ const Model = ({
   audioRef,
   cameraControlsRef,
   cameraPos,
-  setPage,
-  cv
+  setPage
 }) => {
   const { scene } = useGLTF('./gaming_room/room.gltf', true);
   const { camera } = useThree();
@@ -206,7 +204,8 @@ const Model = ({
         e.stopPropagation();
         if (clickedObject?.name === 'cvbox') {
           const link = document.createElement('a');
-          link.href = cv.fields.file.url;
+          link.href =
+            'https://drive.google.com/uc?export=download&id=1LWzrFj-D1pCL6OYeYS_xeTnELLkjFD1x';
           link.download = 'Ali_Jahankhah_CV.docx';
           document.body.appendChild(link);
           link.click();
