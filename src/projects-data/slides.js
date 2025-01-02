@@ -1,4 +1,4 @@
-export const slides = [
+export const projects = [
   {
     title: 'Pollenize',
     description:
@@ -89,5 +89,26 @@ export const slides = [
     liveLink: '',
     clientLink: '',
     sourceLink: 'https://github.com/Ali-Jahankah/bugsquashers-edu-app'
+  }
+];
+//--------------------------------
+export const blogs = [
+  {
+    title: 'Nginx & Load Balancer ',
+    description:
+      'Nginx is a versatile tool that can serve as both a reverse proxy and a load balancer. This post will cover how Nginx can efficiently distribute requests to multiple Node.js servers while also serving a React frontend. You’ll see how Nginx manages traffic between multiple backend servers and a frontend application, allowing for seamless scaling and management of your apps.',
+    link: 'https://medium.com/@ali-jahankah/how-nginx-works-as-a-load-balancer-and-reverse-proxy-locally-with-node-react-and-nx-432ea6e7c2e7'
+  },
+  {
+    title: 'Personalizing Bash Terminal',
+    description:
+      'This blog will walk you through the process of customizing your Terminal, specifically the Bash Terminal. While there are various terminals like ZSH or PowerShell, I personally prefer Bash, and it’s quite popular among users.',
+    link: 'https://medium.com/@ali-jahankah/personalizing-your-bash-terminal-a-quick-guide-300a140298be'
+  },
+  {
+    title: 'Error fix in Next.js/Firebase',
+    description:
+      "If you’re working on a Next.js app, especially version 13, and you’re utilizing TypeScript and Firebase technologies like Firebase App Check and Firebase Recaptcha Enterprise for web, you might encounter a somewhat frustrating issue during the build process.The “Collecting Data” Error. This error can be a bit perplexing, but don’t worry, I've got a fix for you.",
+    link: 'https://medium.com/@ali-jahankah/using-next-js-firebase-and-getting-collecting-data-error-while-building-your-app-743a83923c66'
   }
 ];

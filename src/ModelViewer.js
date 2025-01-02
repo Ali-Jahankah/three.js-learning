@@ -79,21 +79,19 @@ const ModelViewer = ({ audioData, cv }) => {
                 position: 'relative'
               }}
             >
-              {page === 'aboutmebox' ? (
-                <AboutMe />
-              ) : page === 'findmebox' ? (
-                <FindMe />
-              ) : page === 'projectsbox' ? (
-                <Projects slide={slide} setSlide={setSlide} />
-              ) : (
-                <p>
-                  To see content please return to the room and press any options
-                  on the wall!
-                </p>
+              {page === 'aboutmebox' && <AboutMe />}
+              {page === 'findmebox' && <FindMe />}
+              {page === 'projectsbox' && (
+                <Projects slide={slide} setSlide={setSlide} page={page} />
               )}
+              {page === 'blogsbox' && (
+                <Projects slide={slide} setSlide={setSlide} page={page} />
+              )}
+
               <button
                 onClick={(e) => {
                   setActiveCamera('main-cam');
+                  setSlide(0);
                   setCameraPos({ x: 0, y: 0, z: 0 });
                 }}
                 style={{

@@ -1,7 +1,8 @@
-import { slides } from '../projects-data/slides';
+import { projects, blogs } from '../projects-data/slides';
 
-const Projects = ({ slide, setSlide }) => {
-  const content = slides[slide];
+const Projects = ({ slide, setSlide, page }) => {
+  const content = page === 'projectsbox' ? projects[slide] : blogs[slide];
+  const allSlides = page === 'projectsbox' ? projects : blogs;
   return (
     <div
       style={{
@@ -10,7 +11,8 @@ const Projects = ({ slide, setSlide }) => {
         width: '100%',
         gap: '0.5em',
         position: 'relative',
-        color: '#2abfff'
+        color: '#2abfff',
+        height: '100%'
       }}
     >
       <div
@@ -21,13 +23,13 @@ const Projects = ({ slide, setSlide }) => {
           alignItems: 'center'
         }}
       >
-        <h3>Projects</h3>
+        <h3>{page === 'projectsbox' ? 'PROJECTS' : 'BLOGS'}</h3>
         <h3
           className="back-button"
           style={{ color: 'red', cursor: 'pointer' }}
           onClick={() => {
             if (slide === 0) {
-              setSlide(slides.length - 1);
+              setSlide(allSlides.length - 1);
             } else {
               setSlide((prev) => prev - 1);
             }
@@ -42,7 +44,7 @@ const Projects = ({ slide, setSlide }) => {
           className="right-button"
           style={{ color: 'red', cursor: 'pointer' }}
           onClick={() => {
-            if (slide === slides.length - 1) {
+            if (slide === allSlides.length - 1) {
               setSlide(0);
             } else {
               setSlide((prev) => prev + 1);
@@ -51,11 +53,18 @@ const Projects = ({ slide, setSlide }) => {
         >
           &#x21E8;
         </h3>
-        <h3>{`${slide + 1} / ${slides.length}`}</h3>
       </div>
-      <div className="slide">
+      <div
+        className="slide"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          justifyContent: 'space-between'
+        }}
+      >
         <div className="links" style={{ display: 'flex', gap: '8px' }}>
-          {content.sourceLink.length > 0 && (
+          {content?.sourceLink?.length > 0 && (
             <a
               target="_blank"
               rel="noopener noreferrer"
@@ -65,7 +74,7 @@ const Projects = ({ slide, setSlide }) => {
               Source code
             </a>
           )}
-          {content.liveLink.length > 0 && (
+          {content?.liveLink?.length > 0 && (
             <a
               target="_blank"
               rel="noopener noreferrer"
@@ -75,7 +84,7 @@ const Projects = ({ slide, setSlide }) => {
               Live app
             </a>
           )}
-          {content.clientLink.length > 0 && (
+          {content?.clientLink?.length > 0 && (
             <a
               target="_blank"
               rel="noopener noreferrer"
@@ -85,7 +94,7 @@ const Projects = ({ slide, setSlide }) => {
               Client source code
             </a>
           )}
-          {content.serverLink.length > 0 && (
+          {content?.serverLink?.length > 0 && (
             <a
               target="_blank"
               rel="noopener noreferrer"
@@ -93,6 +102,16 @@ const Projects = ({ slide, setSlide }) => {
               href={content.serverLink}
             >
               Server source code
+            </a>
+          )}
+          {content?.link?.length > 0 && (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              style={linksStyles}
+              href={content.link}
+            >
+              Read More on Medium.com
             </a>
           )}
         </div>
@@ -106,6 +125,9 @@ const Projects = ({ slide, setSlide }) => {
         >
           {content.description}
         </p>
+        <h3 style={{ flex: '1', alignContent: 'end' }}>{`${slide + 1} / ${
+          allSlides.length
+        }`}</h3>
       </div>
     </div>
   );
@@ -115,7 +137,7 @@ const linksStyles = {
   color: '#dc99c5',
   background: '#141414c1',
   fontSize: '0.6rem',
-  boxShadow: '0px 0px 5px 0px white',
+  boxShadow: '0px 0px 4px 0px white',
   padding: '0.3em 0.7em',
   borderRadius: '10px',
   cursor: 'pointer'
