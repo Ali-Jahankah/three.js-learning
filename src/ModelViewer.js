@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react';
-import { Canvas, useThree, useFrame } from '@react-three/fiber';
+import { Canvas, useThree } from '@react-three/fiber';
 import {
   useGLTF,
   Html,
@@ -9,11 +9,13 @@ import {
 } from '@react-three/drei';
 import AboutMe from './pages/AboutMe';
 import FindMe from './pages/FindMe';
+import Projects from './pages/Projects';
 
 const ModelViewer = ({ audioData, cv }) => {
   const [activeCamera, setActiveCamera] = useState('main-cam');
   const [cameraPos, setCameraPos] = useState({ x: 0, y: 0, z: 0 });
   const [page, setPage] = useState();
+  const [slide, setSlide] = useState(0);
   const audioRef = useRef(null);
   const cameraControlsRef = useRef(null);
 
@@ -62,14 +64,14 @@ const ModelViewer = ({ audioData, cv }) => {
         <ambientLight intensity={0.5} color={0xffffff} />
         {activeCamera === 'laptop-cam' && page && (
           <Html
-            position={[9, 0.274, 5.04]}
+            position={[9, 0.274, 5.06]}
             transform
             distanceFactor={4}
             rotation={[0, -Math.PI / 2, 0]}
           >
             <div
               style={{
-                width: '355px',
+                width: '363px',
                 height: '205px',
                 padding: '0.5em',
                 backgroundColor: '#262525',
@@ -81,6 +83,8 @@ const ModelViewer = ({ audioData, cv }) => {
                 <AboutMe />
               ) : page === 'findmebox' ? (
                 <FindMe />
+              ) : page === 'projectsbox' ? (
+                <Projects slide={slide} setSlide={setSlide} />
               ) : (
                 <p>
                   To see content please return to the room and press any options
@@ -88,7 +92,7 @@ const ModelViewer = ({ audioData, cv }) => {
                 </p>
               )}
               <button
-                onClick={() => {
+                onClick={(e) => {
                   setActiveCamera('main-cam');
                   setCameraPos({ x: 0, y: 0, z: 0 });
                 }}
@@ -105,7 +109,7 @@ const ModelViewer = ({ audioData, cv }) => {
                   textTransform: 'uppercase',
                   position: 'absolute',
                   bottom: '0.5em',
-                  left: ' 0.5em'
+                  right: ' 0.5em'
                 }}
               >
                 Back to ROOM
@@ -128,12 +132,11 @@ const Model = ({
   setPage,
   cv
 }) => {
-  const { scene, cameras } = useGLTF('./gaming_room/room.gltf', true);
+  const { scene } = useGLTF('./gaming_room/room.gltf', true);
   const { camera } = useThree();
   const cameraRef = useRef(camera);
 
   useEffect(() => {
-    const activeCam = cameras.find((cam) => cam.name === activeCamera);
     const widthCategory =
       window.innerWidth >= 340 && window.innerWidth < 450
         ? 'mobile'
@@ -142,76 +145,57 @@ const Model = ({
         : window.innerWidth >= 600 && window.innerWidth < 800
         ? 'medium'
         : 'large';
-    cameraRef.current = activeCam;
-    if (activeCam) {
-      if (activeCam.name === 'main-cam') {
-        cameraRef.current.position.set(0, 0, 0);
-        cameraRef.current.updateMatrix();
-        cameraRef.current.updateMatrixWorld();
-        cameraControlsRef.current.setLookAt(0, 2, 0, 5, 0, 0, true);
-      }
 
-      if (activeCam.name === 'laptop-cam') {
-        if (widthCategory === 'large') {
-          cameraRef.current.position.set(
-            cameraPos.x + 13,
-            cameraPos.y,
-            cameraPos.z
-          );
-          cameraRef.current.updateMatrix();
-          cameraRef.current.updateMatrixWorld();
-          cameraControlsRef.current.setLookAt(
-            cameraPos.x + 3.8,
-            cameraPos.y,
-            cameraPos.z,
-            cameraPos.x + 8,
-            cameraPos.y,
-            cameraPos.z,
-            true
-          );
-        }
-        if (widthCategory === 'medium') {
-          cameraRef.current.position.set(cameraPos.x, cameraPos.y, cameraPos.z);
-          cameraRef.current.updateMatrix();
-          cameraRef.current.updateMatrixWorld();
-          cameraControlsRef.current.setLookAt(
-            cameraPos.x + 3,
-            cameraPos.y,
-            cameraPos.z,
-            cameraPos.x + 8,
-            cameraPos.y,
-            cameraPos.z,
-            true
-          );
-        }
-        if (widthCategory === 'small') {
-          cameraRef.current.position.set(cameraPos.x, cameraPos.y, cameraPos.z);
-          cameraRef.current.updateMatrix();
-          cameraRef.current.updateMatrixWorld();
-          cameraControlsRef.current.setLookAt(
-            cameraPos.x + 2,
-            cameraPos.y,
-            cameraPos.z,
-            cameraPos.x + 8,
-            cameraPos.y,
-            cameraPos.z,
-            true
-          );
-        }
-        if (widthCategory === 'mobile') {
-          cameraRef.current.position.set(cameraPos.x, cameraPos.y, cameraPos.z);
-          cameraRef.current.updateMatrix();
-          cameraRef.current.updateMatrixWorld();
-          cameraControlsRef.current.setLookAt(
-            cameraPos.x + 1.5,
-            cameraPos.y,
-            cameraPos.z,
-            cameraPos.x + 8,
-            cameraPos.y,
-            cameraPos.z,
-            true
-          );
-        }
+    if (activeCamera === 'main-cam') {
+      cameraRef.current.position.set(0, 0, 0);
+
+      cameraControlsRef.current.setLookAt(-4, 2, 0, 5, 0, 0, true);
+    }
+
+    if (activeCamera === 'laptop-cam') {
+      if (widthCategory === 'large') {
+        cameraControlsRef.current.setLookAt(
+          cameraPos.x + 3.8,
+          cameraPos.y,
+          cameraPos.z,
+          cameraPos.x + 8,
+          cameraPos.y,
+          cameraPos.z,
+          true
+        );
+      }
+      if (widthCategory === 'medium') {
+        cameraControlsRef.current.setLookAt(
+          cameraPos.x + 3,
+          cameraPos.y,
+          cameraPos.z,
+          cameraPos.x + 8,
+          cameraPos.y,
+          cameraPos.z,
+          true
+        );
+      }
+      if (widthCategory === 'small') {
+        cameraControlsRef.current.setLookAt(
+          cameraPos.x + 2,
+          cameraPos.y,
+          cameraPos.z,
+          cameraPos.x + 8,
+          cameraPos.y,
+          cameraPos.z,
+          true
+        );
+      }
+      if (widthCategory === 'mobile') {
+        cameraControlsRef.current.setLookAt(
+          cameraPos.x + 1.5,
+          cameraPos.y,
+          cameraPos.z,
+          cameraPos.x + 8,
+          cameraPos.y,
+          cameraPos.z,
+          true
+        );
       }
     }
   }, [activeCamera, window.innerWidth]);
@@ -229,12 +213,12 @@ const Model = ({
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
-        }
-        if (
-          clickedObject?.name === 'aboutmebox' ||
-          clickedObject?.name === 'findmebox' ||
-          clickedObject?.name === 'projectsbox' ||
-          clickedObject?.name === 'blogsbox'
+        } else if (
+          (clickedObject?.name === 'aboutmebox' ||
+            clickedObject?.name === 'findmebox' ||
+            clickedObject?.name === 'projectsbox' ||
+            clickedObject?.name === 'blogsbox') &&
+          activeCamera !== 'laptop-cam'
         ) {
           setActiveCamera('laptop-cam');
           setCameraPos({
@@ -243,9 +227,7 @@ const Model = ({
             z: 5
           });
           setPage(clickedObject?.name);
-        }
-
-        if (clickedObject?.name.includes('amp') && audioRef.current) {
+        } else if (clickedObject?.name.includes('amp') && audioRef.current) {
           if (audioRef.current.isPlaying) {
             audioRef.current.pause();
           } else {
