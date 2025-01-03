@@ -4,7 +4,12 @@ import React, { useMemo, useState, useEffect, Suspense } from 'react';
 import ModelViewer from './ModelViewer';
 
 const App = () => {
-  const [data, setData] = useState([]);
+  const [blogs, setBlogs] = useState([]);
+  const [projects, setProjects] = useState([]);
+
+  const [aboutMe, setAboutMe] = useState([]);
+  const [music, setMusic] = useState();
+
   const client = useMemo(() => {
     return contentful.createClient({
       space: process.env.REACT_APP_SPACE,
@@ -15,8 +20,37 @@ const App = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await client.getEntries();
-        setData(res.items);
+        const blogRes = await client.getEntries({ content_type: 'blog' });
+        const blogsArray = blogRes.items.map((item) => ({
+          link: item.fields.link,
+          title: item.fields.title,
+          description: item.fields.description
+        }));
+        setBlogs(blogsArray);
+        const projectsRes = await client.getEntries({
+          content_type: 'project'
+        });
+        const projectsArray = projectsRes.items.map((item) => ({
+          link: item.fields.link,
+          title: item.fields.title,
+          description: item.fields.description,
+          serverLink: item.fields.serverLink,
+          liveLink: item.fields.liveLink,
+          clientLink: item.fields.clientLink,
+          sourceLink: item.fields.sourceLink
+        }));
+        setProjects(projectsArray);
+
+        const aboutMeRes = await client.getEntries({ content_type: 'aboutMe' });
+        const aboutMeArray = {
+          email: aboutMeRes.items[0].fields.email,
+          description: aboutMeRes.items[0].fields.description
+        };
+        setAboutMe(aboutMeArray);
+
+        const musicRes = await client.getEntries({ content_type: 'music' });
+        const singleMusic = musicRes.items[0].fields.music;
+        setMusic(singleMusic);
       } catch (error) {
         console.error(error);
       }
@@ -42,10 +76,12 @@ const App = () => {
   return (
     <div className="model">
       <Suspense fallback={<Loader />}>
-        {data.length > 0 ? (
+        {music ? (
           <ModelViewer
-            audioData={data[0].fields.music}
-            cv={data[0].fields.cv}
+            audioData={music}
+            blogs={blogs}
+            aboutMe={aboutMe}
+            projects={projects}
           />
         ) : (
           <Loader />

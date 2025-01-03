@@ -1,4 +1,4 @@
-const AboutMe = () => {
+const AboutMe = ({ aboutMe }) => {
   return (
     <div
       style={{
@@ -11,6 +11,8 @@ const AboutMe = () => {
         alignItems: 'center'
       }}
     >
+      {/* <p>{aboutMe.description}</p> */}
+
       <p>
         Hello! My name is Ali, a 28-year-old boy from the land of{' '}
         <strong>Persia 🇮🇷</strong>. I’m not just working as a developer; I’m
