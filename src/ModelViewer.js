@@ -50,7 +50,14 @@ const ModelViewer = ({ audioData, blogs, aboutMe, projects }) => {
           setCameraPos={setCameraPos}
           setPage={setPage}
         />
-        <CameraControls ref={cameraControlsRef} />
+        <CameraControls
+          ref={cameraControlsRef}
+          maxDistance={10}
+          maxPolarAngle={Math.PI / 1.8}
+          minPolarAngle={Math.PI / 2.6}
+          minAzimuthAngle={Math.PI / 1.15}
+          maxAzimuthAngle={Math.PI * 2.14}
+        />
         {audioData && audioData.fields?.file?.url && (
           <PositionalAudio
             url={audioData.fields.file.url}
