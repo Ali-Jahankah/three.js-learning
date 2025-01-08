@@ -6,7 +6,7 @@ import ModelViewer from './ModelViewer';
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [projects, setProjects] = useState([]);
-
+  const [findMe, setFindMe] = useState([]);
   const [aboutMe, setAboutMe] = useState([]);
   const [music, setMusic] = useState();
 
@@ -20,33 +20,58 @@ const App = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const blogRes = await client.getEntries({ content_type: 'blog' });
-        const blogsArray = blogRes.items.map((item) => ({
-          link: item.fields.link,
-          title: item.fields.title,
-          description: item.fields.description
-        }));
+        const blogRes = await client.getEntries({ content_type: 'blogs' });
+        const blogsArray = Object.values(blogRes.items[0].fields).map(
+          (item) => ({
+            link: item.fields.link,
+            title: item.fields.title,
+            description: item.fields.description
+          })
+        );
         setBlogs(blogsArray);
         const projectsRes = await client.getEntries({
-          content_type: 'project'
+          content_type: 'projects'
         });
-        const projectsArray = projectsRes.items.map((item) => ({
-          link: item.fields.link,
-          title: item.fields.title,
-          description: item.fields.description,
-          serverLink: item.fields.serverLink,
-          liveLink: item.fields.liveLink,
-          clientLink: item.fields.clientLink,
-          sourceLink: item.fields.sourceLink
-        }));
+
+        const projectsArray = Object.values(projectsRes.items[0].fields).map(
+          (item) => {
+            const {
+              link,
+              title,
+              description,
+              serverLink,
+              liveLink,
+              clientLink,
+              sourceLink
+            } = item.fields;
+            return {
+              link,
+              title,
+              description,
+              serverLink,
+              liveLink,
+              clientLink,
+              sourceLink
+            };
+          }
+        );
         setProjects(projectsArray);
 
         const aboutMeRes = await client.getEntries({ content_type: 'aboutMe' });
         const aboutMeArray = {
           email: aboutMeRes.items[0].fields.email,
-          description: aboutMeRes.items[0].fields.description
+          greenText: aboutMeRes.items[0].fields.greenText,
+          whiteText: aboutMeRes.items[0].fields.whiteText,
+          redText: aboutMeRes.items[0].fields.redText
         };
         setAboutMe(aboutMeArray);
+
+        const findMeRes = await client.getEntries({
+          content_type: 'findMeLinks'
+        });
+
+        const findMeArray = findMeRes.items[0].fields;
+        setFindMe(findMeArray);
 
         const musicRes = await client.getEntries({ content_type: 'music' });
         const singleMusic = musicRes.items[0].fields.music;
@@ -82,6 +107,7 @@ const App = () => {
             blogs={blogs}
             aboutMe={aboutMe}
             projects={projects}
+            findMe={findMe}
           />
         ) : (
           <Loader />

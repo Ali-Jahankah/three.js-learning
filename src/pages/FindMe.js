@@ -1,4 +1,4 @@
-const FindMe = () => {
+const FindMe = ({ findMe }) => {
   return (
     <div
       style={{
@@ -12,38 +12,20 @@ const FindMe = () => {
         gap: '15px'
       }}
     >
-      <a
-        href="https://www.linkedin.com/in/uaral/"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{ ...linkStyle, color: '#1e90ff' }}
-      >
-        LinkedIn
-      </a>
-      <a
-        href="https://github.com/Ali-Jahankah"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{ ...linkStyle, color: '#f0d32a' }}
-      >
-        GitHub
-      </a>
-      <a
-        href="https://medium.com/@ali-jahankah"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{ ...linkStyle, color: '#c2e0ff' }}
-      >
-        Medium
-      </a>
-      <a
-        href="https://www.instagram.com/2alij"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{ ...linkStyle, color: '#e6750b' }}
-      >
-        Instagram
-      </a>
+      {Object.entries(findMe).map(([key, value]) => {
+        const { text, color, href } = value.fields;
+        return (
+          <a
+            href={href + href}
+            key={key}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ ...linkStyle, color }}
+          >
+            {text}
+          </a>
+        );
+      })}
     </div>
   );
 };

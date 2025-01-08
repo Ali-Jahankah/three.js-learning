@@ -11,7 +11,7 @@ import AboutMe from './pages/AboutMe';
 import FindMe from './pages/FindMe';
 import Projects from './pages/Projects';
 
-const ModelViewer = ({ audioData, blogs, aboutMe, projects }) => {
+const ModelViewer = ({ audioData, blogs, aboutMe, projects, findMe }) => {
   const [activeCamera, setActiveCamera] = useState('main-cam');
   const [cameraPos, setCameraPos] = useState({ x: 0, y: 0, z: 0 });
   const [page, setPage] = useState();
@@ -86,12 +86,22 @@ const ModelViewer = ({ audioData, blogs, aboutMe, projects }) => {
               }}
             >
               {page === 'aboutmebox' && <AboutMe aboutMe={aboutMe} />}
-              {page === 'findmebox' && <FindMe />}
+              {page === 'findmebox' && <FindMe findMe={findMe} />}
               {page === 'projectsbox' && (
-                <Projects slide={slide} setSlide={setSlide} page={page} />
+                <Projects
+                  slide={slide}
+                  setSlide={setSlide}
+                  page={page}
+                  projects={projects}
+                />
               )}
               {page === 'blogsbox' && (
-                <Projects slide={slide} setSlide={setSlide} page={page} />
+                <Projects
+                  slide={slide}
+                  setSlide={setSlide}
+                  page={page}
+                  blogs={blogs}
+                />
               )}
 
               <button

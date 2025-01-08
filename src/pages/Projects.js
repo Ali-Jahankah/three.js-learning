@@ -1,6 +1,6 @@
-import { projects, blogs } from '../projects-data/slides';
+import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 
-const Projects = ({ slide, setSlide, page }) => {
+const Projects = ({ slide, setSlide, page, projects, blogs }) => {
   const content = page === 'projectsbox' ? projects[slide] : blogs[slide];
   const allSlides = page === 'projectsbox' ? projects : blogs;
   return (
@@ -11,7 +11,6 @@ const Projects = ({ slide, setSlide, page }) => {
         width: '100%',
         gap: '0.5em',
         position: 'relative',
-        color: '#2abfff',
         height: '100%'
       }}
     >
@@ -23,7 +22,9 @@ const Projects = ({ slide, setSlide, page }) => {
           alignItems: 'center'
         }}
       >
-        <h3>{page === 'projectsbox' ? 'PROJECTS' : 'BLOGS'}</h3>
+        <h3 style={{ color: '#00ccff' }}>
+          {page === 'projectsbox' ? 'PROJECTS' : 'BLOGS'}
+        </h3>
         <h3
           className="back-button"
           style={{ color: 'red', cursor: 'pointer' }}
@@ -115,7 +116,7 @@ const Projects = ({ slide, setSlide, page }) => {
             </a>
           )}
         </div>
-        <p
+        <div
           style={{
             margin: '0.5em auto',
             fontSize: '0.5rem',
@@ -123,11 +124,11 @@ const Projects = ({ slide, setSlide, page }) => {
             lineHeight: '14px'
           }}
         >
-          {content.description}
-        </p>
-        <h3 style={{ flex: '1', alignContent: 'end' }}>{`${slide + 1} / ${
-          allSlides.length
-        }`}</h3>
+          {documentToReactComponents(content.description)}
+        </div>
+        <h3 style={{ flex: '1', alignContent: 'end', color: '#f70e0e' }}>{`${
+          slide + 1
+        } / ${allSlides.length}`}</h3>
       </div>
     </div>
   );
