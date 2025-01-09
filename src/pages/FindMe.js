@@ -16,8 +16,8 @@ const FindMe = ({ findMe }) => {
         const { text, color, href } = value.fields;
         return (
           <a
-            href={href + href}
-            key={key}
+            href={href}
+            key={key + href}
             target="_blank"
             rel="noopener noreferrer"
             style={{ ...linkStyle, color }}
