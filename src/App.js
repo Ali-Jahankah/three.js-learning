@@ -103,14 +103,10 @@ const App = () => {
     };
   }, [data]);
 
-  return data[0] ? (
+  return (
     <article className="container">
       <canvas ref={canvasRef} className="canvas"></canvas>
-      <h1 className="title">{data[0].fields.title}</h1>
-      <img src={data[0].fields.logo.fields.file.url} alt="app logo" />
     </article>
-  ) : (
-    <h1 className="title">Loading...</h1>
   );
 };
 
