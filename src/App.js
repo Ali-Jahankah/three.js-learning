@@ -1,33 +1,11 @@
 import './App.css';
-import * as contentful from 'contentful';
 import * as Three from 'three';
-import React, { useMemo, useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { useEffect } from 'react';
 
 const App = () => {
-  const [data, setData] = useState([]);
   const canvasRef = useRef(null);
-  const client = useMemo(() => {
-    return contentful.createClient({
-      space: process.env.REACT_APP_SPACE,
-      accessToken: process.env.REACT_APP_ACCESS_TOKEN
-    });
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await client.getEntries();
-        console.log(res.items);
-        setData(res.items);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-    // eslint-disable-next-line
-  }, [client]);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -101,7 +79,7 @@ const App = () => {
       rerenderer.dispose();
       orbitControls.dispose();
     };
-  }, [data]);
+  }, []);
 
   return (
     <article className="container">
