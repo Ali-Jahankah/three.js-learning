@@ -222,7 +222,7 @@ const Model = ({
         if (clickedObject?.name === 'cvbox') {
           const link = document.createElement('a');
           link.href =
-            'https://drive.google.com/uc?export=download&id=1LWzrFj-D1pCL6OYeYS_xeTnELLkjFD1x';
+            'https://drive.google.com/uc?export=download&id=1fVT6-XVTHHqIqYIQkffVZtUBTq0O7eq8';
           link.download = 'Ali_Jahankhah_CV.docx';
           document.body.appendChild(link);
           link.click();
